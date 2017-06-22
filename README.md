@@ -61,3 +61,8 @@ It's a pretty robust approach, since it has detected 9 different games without e
 - [ ] Solver
 - [ ] Solution - 3D printer representation
 - [ ] Computer - 3D printer interface
+
+# Requirements
+* [skimage](http://scikit-image.org/docs/dev/install.html) `pip install scikit-image`
+
+
