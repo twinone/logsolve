@@ -20,12 +20,13 @@ from skimage import draw
 
 from scipy.spatial import ConvexHull
 from skimage import transform as tf
-import sys
+import sys, os
 
 
 
 
 OUTPUT_SIZE = 1000  # px
+TEST_DIR = 'test/'
 
 # debugging
 COLS = 8
@@ -207,7 +208,7 @@ def intersect(s1,s2):
 
 # Main
 def main():
-    if len(sys.argv) == 2 and sys.argv[1].lower() == 'test':
+    if len(sys.argv) == 2 and sys.argv[1].lower().strip('-') == 'test':
         exit(test())
 
     if len(sys.argv) < 3:
@@ -215,6 +216,26 @@ def main():
         exit(1)
     [i, o] = sys.argv[1:3]
     process(i, o)
+
+def test():
+    files = os.listdir('test')
+    try:
+        os.mkdir(TEST_DIR + 'out')
+    except:
+        pass
+
+    for f in files:
+        split = f.split('.')
+        if (len(split) == 1):
+            continue
+        of = ''.join(split[:-1]) + '-out.' + split[-1]
+        try:
+            inf = TEST_DIR + f
+            outf = TEST_DIR + of
+            process(inf, outf)
+        except Exception as e:
+            print("Exception processing file", f, e)
+
 
 
 
