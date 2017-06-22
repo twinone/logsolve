@@ -16,11 +16,14 @@ from skimage.feature import blob_dog, blob_log, blob_doh
 from skimage import draw
 
 from scipy.spatial import ConvexHull
+from skimage import transform as tf
 
 
 
-COLS = 8
+
+COLS = 5
 SAVE_OUTPUTS = True
+DEBUG = True
 
 
 
@@ -67,9 +70,12 @@ def displ():
 
 # Process an image
 def process(fname):
+    print("Processing",fname)
     global im
     # read the image from disk
     im = imread('test/'+fname+'.jpg', flatten=True)
+    original = im.copy()
+
     add_image(fname)
 
     # edge detection
@@ -79,7 +85,7 @@ def process(fname):
     # thresholding: convert to binary image
     loc = threshold_local(im, 57)
     im = im > loc
-    add_image('Threshold')
+    if (DEBUG): add_image('Threshold')
 
     # detect straight lines longer than 150px
     segs = probabilistic_hough_line(
@@ -94,7 +100,7 @@ def process(fname):
         ((x1, y1), (x2, y2)) = seg
         rr,cc = draw.line(y1,x1,y2,x2)
         im[rr, cc] = 1
-    add_image('Hough Lines')
+    if (DEBUG): add_image('Hough Lines')
 
     # Calculate the connected components (intersecting groups)
     ccs = []
@@ -124,15 +130,6 @@ def process(fname):
     # calculate the convex hull or 'envelope' surrounding segments
     hull = ConvexHull(np.array(coords))
     indices = hull.vertices
-    """
-    im[:] = 0
-    for i in indices:
-        x, y = coords[i]
-        rr, cc = draw.circle(y,x,1)
-        im[rr, cc] = 1
-    im = morphology.convex_hull_image(im)
-    """
-    print(fname + ":", "number of hull vertices:", len(indices))
 
     hullcoords = [coords[i] for i in indices]
     # calculate the 4 vertices of the trapezoid
@@ -152,8 +149,8 @@ def process(fname):
     verts = [
         findmax(-1,-1),
         findmax(-1, 1),
-        findmax( 1,-1),
         findmax( 1, 1),
+        findmax( 1,-1),
     ]
 
     # display the actual vertices a bit bigger
@@ -161,12 +158,23 @@ def process(fname):
         for (x, y) in verts:
             rr, cc = draw.circle(y,x,r)
             im[rr, cc] = 1
-    im[:] = 0
-    disp_verts(1)
-    im = morphology.convex_hull_image(im)
-    disp_verts(20)
-    add_image('Hull')
 
+    if (DEBUG):
+        im[:] = 0
+        disp_verts(1)
+        im = morphology.convex_hull_image(im)
+        disp_verts(20)
+        add_image('Hull')
+
+    # transform the image to a 'straightened' version
+    # see http://scikit-image.org/docs/dev/auto_examples/xx_applications/plot_geometric.html#sphx-glr-auto-examples-xx-applications-plot-geometric-py
+    s = 1000
+    src = np.array([[0, 0], [0, s], [s, s], [s, 0]])
+    dst = np.array(verts)
+    tform3 = tf.ProjectiveTransform()
+    tform3.estimate(src, dst)
+    im = tf.warp(original, tform3, output_shape=(s,s))
+    add_image('Result')
 
 
 
@@ -191,9 +199,7 @@ def main():
     names = []
     for name in names:
         process(name+'0')
-    process('lightup2')
-    #process('test/test3.jpg')
-    #process('test/test6.jpg')
+    process('loopy0')
 
     displ()
 
