@@ -39,7 +39,25 @@ that a solver program can understand without dealing with image recognition.
 
 # Progress
 
-Grid detection works reliably across multiple angles for the "Light Up" game. Here is what it looks like:
-<img width="1197" alt="screen shot 2017-06-22 at 17 11 22" src="https://user-images.githubusercontent.com/4309591/27441797-dc2a0b62-576e-11e7-90a9-85699499101f.png">
+Grid detection works reliably across multiple angles for the "Light Up" game. Here is what the process looks like:
+<img width="1199" alt="image" src="https://user-images.githubusercontent.com/4309591/27445374-cc6e9d72-5779-11e7-96b6-60a1ecc62c99.png">
 
-Other games are not yet tested, but coming soon.
+From left to right:
+* Original image
+* Local-thresholding and Gaussian Blur
+* Hough line detection
+* Largest connected-component convex hull (& detection of warping points)
+* Resulting warped image prepared for solving
+
+Here is an example with other games:
+<img width="1199" alt="image" src="https://user-images.githubusercontent.com/4309591/27445639-c093ca3a-577a-11e7-8a08-8e72057492d6.png">
+
+It's a pretty robust approach, since it has detected 9 different games without even touching the parameters.
+
+# TODO
+- [x] Image capturer
+- [ ] Implement number detection
+- [ ] Design game representation
+- [ ] Solver
+- [ ] Solution - 3D printer representation
+- [ ] Computer - 3D printer interface
