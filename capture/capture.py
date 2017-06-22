@@ -17,13 +17,17 @@ from skimage import draw
 
 from scipy.spatial import ConvexHull
 from skimage import transform as tf
+import sys
 
 
 
 
-COLS = 5
+OUTPUT_SIZE = 1000  # px
+
+# debugging
+COLS = 8
 SAVE_OUTPUTS = True
-DEBUG = True
+DEBUG = False
 
 
 
@@ -69,12 +73,13 @@ def displ():
 
 
 # Process an image
-def process(fname):
+def process(infile, outfile):
+    fname = infile.split('/')[-1].strip()
     print("Processing",fname)
     global im
     # read the image from disk
-    im = imread('test/'+fname+'.jpg', flatten=True)
-    original = im.copy()
+    original = imread(infile, flatten=True)
+    im = original.copy()
 
     add_image(fname)
 
@@ -168,13 +173,18 @@ def process(fname):
 
     # transform the image to a 'straightened' version
     # see http://scikit-image.org/docs/dev/auto_examples/xx_applications/plot_geometric.html#sphx-glr-auto-examples-xx-applications-plot-geometric-py
-    s = 1000
+    s = OUTPUT_SIZE
     src = np.array([[0, 0], [0, s], [s, s], [s, 0]])
     dst = np.array(verts)
     tform3 = tf.ProjectiveTransform()
     tform3.estimate(src, dst)
     im = tf.warp(original, tform3, output_shape=(s,s))
     add_image('Result')
+
+    # finally save the result
+    print("Saving to ",outfile)
+    imsave(outfile, im)
+
 
 
 
@@ -194,14 +204,14 @@ def intersect(s1,s2):
 
 # Main
 def main():
-    #names = ['pearl', 'range', 'tents', 'unruly']
-    names = ['fifteen', 'galaxies', 'keen', 'loopy']
-    names = []
-    for name in names:
-        process(name+'0')
-    process('loopy0')
+    if len(sys.argv) == 2 and sys.argv[1].lower() == 'test':
+        exit(test())
 
-    displ()
+    if len(sys.argv) < 3:
+        print("Usage:", sys.argv[0], '<input-image> <output-image>')
+        exit(1)
+    [i, o] = sys.argv[1:3]
+    process(i, o)
 
 
 
