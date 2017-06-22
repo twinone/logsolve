@@ -124,12 +124,14 @@ def process(fname):
     # calculate the convex hull or 'envelope' surrounding segments
     hull = ConvexHull(np.array(coords))
     indices = hull.vertices
+    """
     im[:] = 0
     for i in indices:
         x, y = coords[i]
         rr, cc = draw.circle(y,x,1)
         im[rr, cc] = 1
     im = morphology.convex_hull_image(im)
+    """
     print(fname + ":", "number of hull vertices:", len(indices))
 
     hullcoords = [coords[i] for i in indices]
@@ -155,9 +157,14 @@ def process(fname):
     ]
 
     # display the actual vertices a bit bigger
-    for (x, y) in verts:
-        rr, cc = draw.circle(y,x,10)
-        im[rr, cc] = 1
+    def disp_verts(r):
+        for (x, y) in verts:
+            rr, cc = draw.circle(y,x,r)
+            im[rr, cc] = 1
+    im[:] = 0
+    disp_verts(1)
+    im = morphology.convex_hull_image(im)
+    disp_verts(20)
     add_image('Hull')
 
 
@@ -181,9 +188,10 @@ def intersect(s1,s2):
 def main():
     #names = ['pearl', 'range', 'tents', 'unruly']
     names = ['fifteen', 'galaxies', 'keen', 'loopy']
+    names = []
     for name in names:
         process(name+'0')
-    #process('test/1.jpg')
+    process('lightup2')
     #process('test/test3.jpg')
     #process('test/test6.jpg')
 
