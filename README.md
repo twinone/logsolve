@@ -37,3 +37,9 @@ recognizing a game and outputting a nicer representation of the game,
 that a solver program can understand without dealing with image recognition.
 
 
+# Progress
+
+Grid detection works reliably across multiple angles for the "Light Up" game. Here is what it looks like:
+<img width="1197" alt="screen shot 2017-06-22 at 17 11 22" src="https://user-images.githubusercontent.com/4309591/27441797-dc2a0b62-576e-11e7-90a9-85699499101f.png">
+
+Other games are not yet tested, but coming soon.
