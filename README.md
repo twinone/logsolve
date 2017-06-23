@@ -82,23 +82,17 @@ Automated testing of all images in the test folder produces the following result
 ```
 [PASS] test/fifteen0-4x4.jpg: 4x4
 [PASS] test/galaxies0-7x7.jpg: 7x7
-[PASS] test/keen0-6x6.jpg: 6x6
-[PASS] test/lightup0-14x14.jpg: 14x14
-[PASS] test/lightup1-14x14.jpg: 14x14
-[PASS] test/lightup3-7x7.jpg: 7x7
-[PASS] test/lightup4-7x7.jpg: 7x7
-[PASS] test/lightup5-7x7.jpg: 7x7
-[PASS] test/lightup6-14x14.jpg: 14x14
-[PASS] test/loopy0-7x7.jpg: 7x7
-[PASS] test/pearl0-8x8.jpg: 8x8
-[PASS] test/range0-6x9.jpg: 6x9
-[PASS] test/tents0-8x8.jpg: 8x8
+...
 [PASS] test/unruly0-10x10.jpg: 10x10
+[PASS] test/range0-6x9.jpg: 6x9
 ```
+
+It's a very flexible approach, as there can be both NxM grids and the vertical size of a cell does not need to match the horizontal size.
 
 # TODO
 - [x] Image capturer
 - [x] Detect grid size
+- [ ] Cell classification and color detection
 - [ ] Implement number detection
 - [ ] Design game representation
 - [ ] Solver
