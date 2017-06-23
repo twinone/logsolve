@@ -31,7 +31,7 @@ TEST_DIR = 'test/'
 # debugging
 COLS = 8
 SAVE_OUTPUTS = True
-DEBUG = False
+DEBUG = True
 
 
 
@@ -77,7 +77,7 @@ def displ():
 
 
 # Process an image
-def process(infile, outfile):
+def capture(infile, outfile, dilations=0):
     fname = infile.split('/')[-1].strip()
     print("Processing",fname)
     global im
@@ -95,6 +95,13 @@ def process(infile, outfile):
     loc = threshold_local(im, 57)
     im = im > loc
     if (DEBUG): add_image('Threshold')
+
+    for i in range(dilations):
+        im = morphology.dilation(im)
+    for i in range(dilations):
+        im = morphology.erosion(im)
+
+    if (DEBUG): add_image('Dilation, Erosion ('+str(dilations)+')')
 
     # detect straight lines longer than 150px
     segs = probabilistic_hough_line(
@@ -189,6 +196,8 @@ def process(infile, outfile):
     print("Saving to ",outfile)
     imsave(outfile, im)
 
+    if (DEBUG): displ()
+    return im
 
 
 
@@ -215,7 +224,7 @@ def main():
         print("Usage:", sys.argv[0], '<input-image> <output-image>')
         exit(1)
     [i, o] = sys.argv[1:3]
-    process(i, o)
+    capture(i, o)
 
 def test():
     files = os.listdir('test')
@@ -232,7 +241,7 @@ def test():
         try:
             inf = TEST_DIR + f
             outf = TEST_DIR + of
-            process(inf, outf)
+            capture(inf, outf)
         except Exception as e:
             print("Exception processing file", f, e)
 
