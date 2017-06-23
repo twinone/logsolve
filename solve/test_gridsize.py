@@ -20,7 +20,6 @@ def main():
         usage()
 
     detected = grid_size(fname)
-    print(real, detected)
     if real != detected:
         print('[FAIL]', fname+': expected', coords_str(real) + ', got', coords_str(detected))
         exit(1)
