@@ -215,9 +215,13 @@ def main():
     if len(sys.argv) < 2:
         print("Usage:", sys.argv[0], '<input-image>')
         exit(1)
+    infile = sys.argv[1]
     fname = infile.split('/')[-1].strip()
+
+    global DEBUG
+    DEBUG = True
     print("Processing", fname)
-    x, y = grid_size(sys.argv[1])
+    x, y = grid_size(infile)
     print('Grid size (x,y): ' + str(x) + 'x' + str(y))
 
 
