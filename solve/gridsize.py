@@ -24,12 +24,12 @@ import sys, os
 
 
 # Distance in pixels to group same slope segments
-SEGMENT_DISTANCE = 20
+SEGMENT_DISTANCE = 10
 
 # debugging
 COLS = 8
-SAVE_OUTPUTS = True
-DEBUG = True
+SAVE_OUTPUTS = False
+DEBUG = False
 
 
 
@@ -70,14 +70,9 @@ def displ():
     #plt.tight_layout()
     plt.show()
 
-
-
-
-
 # Process an image
-def process(infile, outfile):
+def grid_size(infile):
     fname = infile.split('/')[-1].strip()
-    print("Processing",fname)
     global im
     # read the image from disk
     original = imread(infile, flatten=True)
@@ -102,36 +97,58 @@ def process(infile, outfile):
         line_length=200,
         line_gap=10)
 
+    #segs = [seg for seg in segs if vertical(seg)]
+
     # draw the segments
     im[:] = 0 # set image to black
-
-    # filter slopes
-    #segs = [seg for seg in segs if hvslope(seg)]
-
     for seg in segs:
         ((x1, y1), (x2, y2)) = seg
         rr,cc = draw.line(y1,x1,y2,x2)
         im[rr, cc] = 1
 
-    process_segments(segs)
-
     if (DEBUG): add_image('Hough Lines')
-    im = morphology.opening(im)
+    hh, vv = process_segments(segs)
+
+    # draw the segments
+    im[:] = 0 # set image to black
+
+    num = 0
+    for yy in hh:
+        for yyy in yy:
+            (_,y),_ = yyy
+            rr,cc = draw.line(y,0,y,999)
+            im[rr, cc] = 1
+            num += 1
+    for xx in vv:
+        for xxx in xx:
+            (x,_),_ = xxx
+            rr,cc = draw.line(0,x,999,x)
+            im[rr, cc] = 1
+            num += 1
+
+    if (DEBUG):
+        add_image('Filtered Segs')
+        # finally save the result
+        displ()
+
+    return len(vv)-1, len(hh)-1
 
 
-    # finally save the result
-    print("Saving to ", outfile)
-    imsave(outfile, im)
+def segcmp(seg):
+    (a, b), (c, d) = seg
+    if (vertical(seg)): return (a+c)/2
+    else: return (b+d)/2
 
-    displ()
 
 def process_segments(segs, dst=SEGMENT_DISTANCE):
     vsegs = [x for x in segs if vertical(x)]
     hsegs = [x for x in segs if horizontal(x)]
 
+    vsegs = sorted(vsegs, key=segcmp)
+    hsegs = sorted(hsegs, key=segcmp)
     h, v = [], []
     # vertical segments
-    for seg in vsegs:
+    while vsegs:
         s = vsegs.pop()
         (a, _), _ = s
         found = False
@@ -145,7 +162,7 @@ def process_segments(segs, dst=SEGMENT_DISTANCE):
         if not found: v.append([s])
 
     # horizontal segments
-    for seg in hsegs:
+    while hsegs:
         s = hsegs.pop()
         (_, a), _ = s
         found = False
@@ -159,15 +176,14 @@ def process_segments(segs, dst=SEGMENT_DISTANCE):
         if not found: h.append([s])
     hlen = [len(x) for x in h]
     vlen = [len(x) for x in v]
-    print("grid size:: ", len(v)-1, len(h)-1)
-    print("h, v group sizes: ", hlen, vlen)
+    return h, v
 
 
 def horizontal(seg):
-    return abs(slope(seg)) < 0.01
+    return abs(slope(seg)) < 1/3
 
 def vertical(seg):
-    return abs(slope(seg)) > 100
+    return abs(slope(seg)) > 3
 
 def hvslope(seg):
     s = abs(slope(seg))
@@ -196,34 +212,13 @@ def intersect(s1,s2):
 
 # Main
 def main():
-    if len(sys.argv) == 2 and sys.argv[1].lower().strip('-') == 'test':
-        exit(test())
-
-    if len(sys.argv) < 3:
-        print("Usage:", sys.argv[0], '<input-image> <output-image>')
+    if len(sys.argv) < 2:
+        print("Usage:", sys.argv[0], '<input-image>')
         exit(1)
-    [i, o] = sys.argv[1:3]
-    process(i, o)
-
-def test():
-    files = os.listdir('test')
-    try:
-        os.mkdir(TEST_DIR + 'out')
-    except:
-        pass
-
-    for f in files:
-        split = f.split('.')
-        if (len(split) == 1):
-            continue
-        of = ''.join(split[:-1]) + '-out.' + split[-1]
-        try:
-            inf = TEST_DIR + f
-            outf = TEST_DIR + of
-            process(inf, outf)
-        except Exception as e:
-            print("Exception processing file", f, e)
-
+    fname = infile.split('/')[-1].strip()
+    print("Processing", fname)
+    x, y = grid_size(sys.argv[1])
+    print('Grid size (x,y): ' + str(x) + 'x' + str(y))
 
 
 
