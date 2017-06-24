@@ -24,7 +24,7 @@ import sys, os
 
 
 # Distance in pixels to group same slope segments
-SEGMENT_DISTANCE = 10
+SEGMENT_DISTANCE = 30
 
 # debugging
 COLS = 8
@@ -71,14 +71,12 @@ def displ():
     plt.show()
 
 # Process an image
-def grid_size(infile):
-    fname = infile.split('/')[-1].strip()
+def gridsize(original, segdst=SEGMENT_DISTANCE):
     global im
     # read the image from disk
-    original = imread(infile, flatten=True)
     im = original.copy()
 
-    add_image(fname)
+    add_image('Original')
 
     # edge detection
     im = sobel(im)
@@ -217,11 +215,12 @@ def main():
         exit(1)
     infile = sys.argv[1]
     fname = infile.split('/')[-1].strip()
+    im = imread(infile, flatten=True)
 
     global DEBUG
     DEBUG = True
     print("Processing", fname)
-    x, y = grid_size(infile)
+    x, y = gridsize(im)
     print('Grid size (x,y): ' + str(x) + 'x' + str(y))
 
 

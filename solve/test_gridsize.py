@@ -3,7 +3,7 @@
 
 
 import sys
-from gridsize import grid_size
+from gridsize import gridsize
 
 def usage():
     print("Usage:", sys.argv[0], '<input-image> <x> <y>')
@@ -19,7 +19,7 @@ def main():
     except:
         usage()
 
-    detected = grid_size(fname)
+    detected = gridsize(fname)
     if real != detected:
         print('[FAIL]', fname+': expected', coords_str(real) + ', got', coords_str(detected))
         exit(1)
