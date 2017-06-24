@@ -104,8 +104,10 @@ The solution is fairly simple, we do **two separate binary thresholdings**, one 
 The little errors are fine, we will be taking the average color of each cell after thresholding. Just in case it's probably a good idea to only use the center part of a cell for color detection, to avoid errors around the edges:
 <img width="849" alt="image" src="https://user-images.githubusercontent.com/4309591/27510113-b5506886-590a-11e7-858e-0a374cd4e492.png">
 
-Now we have the combined image and know for each cell if it's white, black or empty. It's time to solve the puzzle.
+With a slightly more complicated game, *Light Up*, we can use the same approach, without changing any code, and get the following result:
+<img width="840" alt="image" src="https://user-images.githubusercontent.com/4309591/27510226-a645f21e-590c-11e7-9334-a36753395f16.png">
 
+This way we only have to check for numbers on the black cells (and we need to know where they are anyway to solve the game).
 
 
 
