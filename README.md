@@ -37,9 +37,17 @@ recognizing a game and outputting a nicer representation of the game,
 that a solver program can understand without dealing with image recognition.
 
 
-# Progress
+# Requirements
+* [skimage](http://scikit-image.org/docs/dev/install.html) `pip install scikit-image`
 
-Grid detection works reliably across multiple angles for the "Light Up" game. Here is what the process looks like:
+
+
+# How it works
+Here are the steps that the programs do in order to solve a puzzle
+
+## 1. Capture
+
+Capturing the image and undistorting works reliably across multiple angles for the "Light Up" game. Here is what the process looks like:
 <img width="1199" alt="image" src="https://user-images.githubusercontent.com/4309591/27445374-cc6e9d72-5779-11e7-96b6-60a1ecc62c99.png">
 
 From left to right:
@@ -54,15 +62,63 @@ Here is an example with other games:
 
 It's a pretty robust approach, since it has detected 9 different games without even touching the parameters.
 
+
+## 2. Grid size detection
+We can accurately detect the size of the grid on an undistorted image:
+<img width="1201" alt="grid" src="https://user-images.githubusercontent.com/4309591/27477018-2c1f16d4-580b-11e7-9f29-f9a4bd1d177c.png">
+From left to right:
+* Original undistorted image
+* Local-thresholding
+* Hough line detection
+* Line clustering
+
+The line clustering algorithm first selects horizontal and vertical lines, and groups them by distance. This way we'll have an accurate and redundant map of the grid. If we count the number of groups we get the size of the grid.
+
+#### Testing
+We test the undistorted images from the Capture process. Images are manually labeled as nameN-XxY.jpg where X and Y are the width and height in grid cells of the puzzle.
+
+Automated testing of all images in the test folder produces the following result:
+
+```
+[PASS] test/fifteen0-4x4.jpg: 4x4
+[PASS] test/galaxies0-7x7.jpg: 7x7
+...
+[PASS] test/unruly0-10x10.jpg: 10x10
+[PASS] test/range0-6x9.jpg: 6x9
+```
+
+It's a very flexible approach, as there can be both NxM grids and the vertical size of a cell does not need to match the horizontal size.
+
+## 3. Cell classification
+In most games we want to be able to distinguish between dark and light cells. This is an easy problem with thresholding. Thresholding converts an image (grayscale) to a binary image (black and white only) pixel by pixel based on whether the pixel meets certain criteria, like being brighter than the mean, or being darker than the mean of the 20x20 pixels surrounding it. If we use all the pixels it's called **global thresholding**, and the same criteria is applied to all pixels. This is a fast approach. Using only the **neighborhood** of a pixel is called **local thresholding** and is a bit slower but can easily solves **shadow** problems. A quick comparison shows the problem with global thresholding.
+<img width="895" alt="image" src="https://user-images.githubusercontent.com/4309591/27509816-42c7ede8-5905-11e7-8f06-c30e9ff08773.png">
+
+Just being 'brighter' than the mean value is a little error prone, so we use an **offset** to make sure it's at least brighter by *offset*. Since the brightness of the pixels are between 0 and 1 in this example, an offset of 0.1 worked surprisingly well. We'll use **local thresholding** even though it's a bit slower, because with more aggressive shadows global thresholding could be a problem.
+
+#### Ternary thresholding
+Thresholding is nice, but it only classifies pixels in a binary way, a pixel is either in the resulting image or it is not, but in the game *Unruly* there are white, black and empty squares, and we want to detect all three.
+
+The solution is fairly simple, we do **two separate binary thresholdings**, one for the white squares and one for the black squares:
+<img width="849" alt="image" src="https://user-images.githubusercontent.com/4309591/27509855-1750c940-5906-11e7-9414-faf2053c157a.png">
+
+The little errors are fine, we will be taking the average color of each cell after thresholding. Just in case it's probably a good idea to only use the center part of a cell for color detection, to avoid errors around the edges:
+<img width="849" alt="image" src="https://user-images.githubusercontent.com/4309591/27510113-b5506886-590a-11e7-858e-0a374cd4e492.png">
+
+Now we have the combined image and know for each cell if it's white, black or empty. It's time to solve the puzzle.
+
+
+
+
+
+
+
 # TODO
 - [x] Image capturer
+- [x] Detect grid size
+- [x] Cell classification and color detection
 - [ ] Implement number detection
 - [ ] Design game representation
 - [ ] Solver
 - [ ] Solution - 3D printer representation
 - [ ] Computer - 3D printer interface
-
-# Requirements
-* [skimage](http://scikit-image.org/docs/dev/install.html) `pip install scikit-image`
-
 
