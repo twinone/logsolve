@@ -89,6 +89,22 @@ Automated testing of all images in the test folder produces the following result
 
 It's a very flexible approach, as there can be both NxM grids and the vertical size of a cell does not need to match the horizontal size.
 
+## 3. Cell classification
+In most games we want to be able to distinguish between dark and light cells. This is an easy problem with thresholding. Thresholding converts an image (grayscale) to a binary image (black and white only) pixel by pixel based on whether the pixel meets certain criteria, like being brighter than the mean, or being darker than the mean of the 20x20 pixels surrounding it. If we use all the pixels it's called **global thresholding**, and the same criteria is applied to all pixels. This is a fast approach. Using only the **neighborhood** of a pixel is called **local thresholding** and is a bit slower but can easily solves **shadow** problems. A quick comparison shows the problem with global thresholding.
+<img width="895" alt="image" src="https://user-images.githubusercontent.com/4309591/27509816-42c7ede8-5905-11e7-8f06-c30e9ff08773.png">
+
+Just being 'brighter' than the mean value is a little error prone, so we use an **offset** to make sure it's at least brighter by *offset*. Since the brightness of the pixels are between 0 and 1 in this example, an offset of 0.1 worked surprisingly well. We'll use **local thresholding** even though it's a bit slower, because with more aggressive shadows global thresholding could be a problem.
+
+#### Ternary thresholding
+Thresholding is nice, but it only classifies pixels in a binary way, a pixel is either in the resulting image or it is not, but in the game *Unruly* there are white, black and empty squares, and we want to detect all three.
+
+The solution is fairly simple, we do **two separate binary thresholdings**, one for the white squares and one for the black squares:
+<img width="849" alt="screen shot 2017-06-24 at 17 34 20" src="https://user-images.githubusercontent.com/4309591/27509855-1750c940-5906-11e7-9414-faf2053c157a.png">
+
+
+
+
+
 # TODO
 - [x] Image capturer
 - [x] Detect grid size
