@@ -99,7 +99,14 @@ Just being 'brighter' than the mean value is a little error prone, so we use an 
 Thresholding is nice, but it only classifies pixels in a binary way, a pixel is either in the resulting image or it is not, but in the game *Unruly* there are white, black and empty squares, and we want to detect all three.
 
 The solution is fairly simple, we do **two separate binary thresholdings**, one for the white squares and one for the black squares:
-<img width="849" alt="screen shot 2017-06-24 at 17 34 20" src="https://user-images.githubusercontent.com/4309591/27509855-1750c940-5906-11e7-9414-faf2053c157a.png">
+<img width="849" alt="image" src="https://user-images.githubusercontent.com/4309591/27509855-1750c940-5906-11e7-9414-faf2053c157a.png">
+
+The little errors are fine, we will be taking the average color of each cell after thresholding. Just in case it's probably a good idea to only use the center part of a cell for color detection, to avoid errors around the edges:
+<img width="849" alt="image" src="https://user-images.githubusercontent.com/4309591/27510113-b5506886-590a-11e7-858e-0a374cd4e492.png">
+
+Now we have the combined image and know for each cell if it's white, black or empty. It's time to solve the puzzle.
+
+
 
 
 
@@ -108,7 +115,7 @@ The solution is fairly simple, we do **two separate binary thresholdings**, one 
 # TODO
 - [x] Image capturer
 - [x] Detect grid size
-- [ ] Cell classification and color detection
+- [x] Cell classification and color detection
 - [ ] Implement number detection
 - [ ] Design game representation
 - [ ] Solver
