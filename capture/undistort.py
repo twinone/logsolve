@@ -77,15 +77,12 @@ def displ():
 
 
 # Process an image
-def capture(infile, outfile, dilations=0):
-    fname = infile.split('/')[-1].strip()
-    print("Processing",fname)
+def undistort(original, dilations=0):
     global im
     # read the image from disk
-    original = imread(infile, flatten=True)
     im = original.copy()
 
-    add_image(fname)
+    add_image('Original')
 
     # edge detection
     im = sobel(im)
@@ -192,11 +189,6 @@ def capture(infile, outfile, dilations=0):
     im = tf.warp(original, tform3, output_shape=(s,s))
     add_image('Result')
 
-    # finally save the result
-    print("Saving to ",outfile)
-    imsave(outfile, im)
-
-    if (DEBUG): displ()
     return im
 
 
@@ -223,8 +215,15 @@ def main():
     if len(sys.argv) < 3:
         print("Usage:", sys.argv[0], '<input-image> <output-image>')
         exit(1)
-    [i, o] = sys.argv[1:3]
-    capture(i, o)
+    [infile, outfile] = sys.argv[1:3]
+    img = imread(infile, flatten=True)
+
+    im = undistort(img)
+
+    if (DEBUG): displ()
+    print("Saving to ", outfile)
+    imsave(outfile, im)
+
 
 def test():
     files = os.listdir('test')
@@ -241,7 +240,7 @@ def test():
         try:
             inf = TEST_DIR + f
             outf = TEST_DIR + of
-            capture(inf, outf)
+            undistort(inf, outf)
         except Exception as e:
             print("Exception processing file", f, e)
 
