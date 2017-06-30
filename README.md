@@ -112,6 +112,9 @@ This way we only have to check for numbers on the black cells (and we need to kn
 
 
 
+---
+
+Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seems like the perfect solution to detect numbers. We still need to be able to distinguish between cells with and without numbers, so maybe this part will take some time to be completed. Meanwhile simple games like **Unruly** can already be solved, so both TensorFlow and the solving will be implemented in parallel.
 
 
 
