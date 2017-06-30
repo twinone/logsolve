@@ -1,20 +1,21 @@
 # log-solve
-Logic puzzle game solver
+Logic puzzle game solver using Python, Prolog, scikit-image, a camera and a 3D printer.
 
 # Basic idea
-The idea of this project is to take a phone game (like 
+The idea of this project is to take a picture of a game on a phone (like 
 [Simon Tatham's Puzzles](https://play.google.com/store/apps/details?id=name.boyle.chris.sgtpuzzles&hl=en))
 and solve it using a programming language (like [Prolog](http://www.swi-prolog.org/)).
 Then use a capacitive pen attached to a 3D printer to solve the game on the phone.
 
-This is just a draft for now, so here are the basic steps to reproduce a simple game solving technique:
-## 1. Capture & convert the game to a prolog input file. (Capturer)
+We can distinguish three stages in the process:
+
+## 1. Capture & convert the game to a numeric representation. (Capturer)
 There are two ways to approach this:
 * Capturing a screenshot and reading the SD card. This method reduces the problem-solving to puzzles that are predictable from the initial state.
-* Using an external camera. This way we can take pictures or video while playing.
+* Using an external camera. This way we can take pictures or video while playing, and interact with the printer while it's solving. **We will be using this approach**.
 
 ## 2. Solve the game (Solver)
-Theoretically this can be done using any language or algorithm, but it will probably be using Prolog and the clpfd library.
+Theoretically this can be done using any language or algorithm, but it will probably be using Prolog and the clpfd library. Some games contributed by other developers are in other languages, but most of Simon Tatham's Puzzles are to be solved in Prolog.
 
 ## 3. Reproduce the solution on the phone (Executor)
 Using a 3D printer we can simulate a finger that plays the game.
@@ -22,8 +23,8 @@ Using a 3D printer we can simulate a finger that plays the game.
 
 
 Obviously this is a very simple way of solving a game, and has some restrictions, discarding games that:
-* Require very fast inputs are discarded
-* Use more than a single finger for input, or use accelerometers, etc.
+* Require very fast inputs
+* Use more than a single finger or the accelerometer as inputs, etc.
 
 
 
@@ -118,7 +119,7 @@ This way we only have to check for numbers on the black cells (and we need to kn
 - [x] Image capturer
 - [x] Detect grid size
 - [x] Cell classification and color detection
-- [ ] Implement number detection
+- [ ] Implement number detection (In progress)
 - [ ] Design game representation
 - [ ] Solver
 - [ ] Solution - 3D printer representation
