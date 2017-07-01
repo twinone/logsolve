@@ -1,12 +1,12 @@
 import logsolve as ls
 
 def main():
-    print('Undistorting')
+    ls.log('Undistorting')
     im = ls.undistort_from_arg()
-    print('Calculating grid size...')
+    ls.log('Calculating grid size...')
     gs = ls.gridsize(im)
-    print('Grid size: ', gs)
-    print('Calculating cell colors')
+    ls.log('Grid size: ', gs)
+    ls.log('Calculating cell colors')
     colors = ls.thresh_local_mean(im, gs)
     out = ls.printmat(colors)
     print(out)
