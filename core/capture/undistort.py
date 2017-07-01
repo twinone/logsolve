@@ -26,7 +26,9 @@ import sys, os
 
 
 OUTPUT_SIZE = 1000  # px
-TEST_DIR = 'test/'
+
+path = os.path.dirname(os.path.realpath(__file__))
+TEST_DIR = path+'/../../test/capture'
 
 # debugging
 COLS = 8
@@ -223,26 +225,6 @@ def main():
     if (DEBUG): displ()
     print("Saving to ", outfile)
     imsave(outfile, im)
-
-
-def test():
-    files = os.listdir('test')
-    try:
-        os.mkdir(TEST_DIR + 'out')
-    except:
-        pass
-
-    for f in files:
-        split = f.split('.')
-        if (len(split) == 1):
-            continue
-        of = ''.join(split[:-1]) + '-out.' + split[-1]
-        try:
-            inf = TEST_DIR + f
-            outf = TEST_DIR + of
-            undistort(inf, outf)
-        except Exception as e:
-            print("Exception processing file", f, e)
 
 
 
