@@ -112,7 +112,55 @@ This way we only have to check for numbers on the black cells (and we need to kn
 
 
 
+## 4. Obtaining a solution
+
+For the **Unruly** game, I've written a small Prolog script that calculates the solution given a problem. Given following problem:
+```
+10 10
+-1 -1 -1 -1  0 -1 -1 -1  0 -1
+-1 -1 -1 -1 -1  1 -1 -1 -1  1
+-1  0 -1 -1 -1  1 -1 -1 -1 -1
+-1 -1 -1 -1  0 -1 -1 -1  1 -1
+-1  0 -1 -1 -1 -1 -1  0 -1  1
+-1 -1  1 -1 -1 -1 -1 -1 -1  1
+-1 -1 -1  0 -1 -1  1 -1  1 -1
+-1 -1  0 -1 -1 -1  1 -1 -1 -1
+-1 -1 -1 -1 -1 -1 -1 -1 -1  1
+ 1  0 -1 -1 -1 -1 -1  0 -1  1
+```
+
+It prints the following solution and steps:
+
+```
+$ ./solve < input.txt 
+
+1 1 0 1 0 0 1 1 0 0 
+0 1 0 0 1 1 0 0 1 1 
+1 0 1 0 1 1 0 1 0 0 
+1 1 0 1 0 0 1 0 1 0 
+0 0 1 0 1 0 1 0 1 1 
+0 0 1 1 0 1 0 1 0 1 
+1 1 0 0 1 0 1 0 1 0 
+0 1 0 1 1 0 1 1 0 0 
+0 0 1 1 0 1 0 1 0 1 
+1 0 1 0 0 1 0 0 1 1 
+
+dclick 1 1
+dclick 1 2
+click 1 3
+[...]
+dclick 10 6
+click 10 7
+dclick 10 9
+
+```
+
+Now this only has to be sent over the network to the 3D printer.
+
+
+
 ---
+
 
 Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seems like the perfect solution to detect numbers. We still need to be able to distinguish between cells with and without numbers, so maybe this part will take some time to be completed. Meanwhile simple games like **Unruly** can already be solved, so both TensorFlow and the solving will be implemented in parallel.
 
@@ -123,8 +171,8 @@ Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seem
 - [x] Detect grid size
 - [x] Cell classification and color detection
 - [ ] Implement number detection (In progress)
-- [ ] Design game representation
-- [ ] Solver
-- [ ] Solution - 3D printer representation
+- [x] Design game representation
+- [x] Solver
+- [x] Solution - 3D printer representation
 - [ ] Computer - 3D printer interface
 
