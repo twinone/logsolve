@@ -48,7 +48,7 @@ Here are the steps that the programs do in order to solve a puzzle
 
 ## 1. Capture
 
-Capturing the image and undistorting works reliably across multiple angles for the "Light Up" game. Here is what the process looks like:
+Capturing the image and undistorting works reliably across multiple angles across multiple games. Here is what the process looks like with the **Loopy** game:
 <img width="1199" alt="image" src="https://user-images.githubusercontent.com/4309591/27445374-cc6e9d72-5779-11e7-96b6-60a1ecc62c99.png">
 
 From left to right:
