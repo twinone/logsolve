@@ -28,7 +28,9 @@ main :-
   maplist(solveLine, MatrixByCols),
 
   label(Vars),
+  %prettyprint(Grid),nl,
   prettyprint(MatrixByRows),nl,
+  writeSolutionSteps(Grid, MatrixByRows),
   halt.
 
 solveLine(Line) :-
@@ -63,6 +65,13 @@ prettyprintRow(_).
 
 
 
+writeSolutionSteps(Problem, Solution) :-
+  elem(Problem, R, C, -1), elem(Solution, R, C, X),
+  writeStep(R, C, X), fail.
+writeSolutionSteps(_,_).
+
+writeStep(R, C, 0) :- write('click '), write(R), write(' '), write(C), nl.
+writeStep(R, C, 1) :- write('dclick '), write(R), write(' '), write(C), nl.
 
 
 
