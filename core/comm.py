@@ -3,8 +3,7 @@ import sys
 import serial
 import time
 
-UP_DST = 3  # mm
-SPEED_XY = 1200  # mm/min
+SPEED_XY = 2000  # mm/min
 SPEED_Z = 1200  # mm/min
 
 class PrintComm:
@@ -18,11 +17,13 @@ class PrintComm:
             sys.exit(1)
 
     def set_z(self, z):
+        z = int(z)
         cmd = 'G1 Z{0} F{1}'.format(z, SPEED_Z)
         self.z = z
         self.write(cmd)
 
     def set_xy(self, x, y):
+        x, y = int(x), int(y)
         cmd = 'G1 X{0} Y{1} F{2}'.format(x, y, SPEED_XY)
         self.x, self.y = x, y
         self.write(cmd)
@@ -34,13 +35,15 @@ class PrintComm:
         self.set_xy(self.x+x, self.y+y)
 
 
-    def up(self):
-        self.offset_z(UP_DST)
-    def down(self):
-        self.offset_z(-UP_DST)
+    def click(self, z):
+        self.offset_z(-z)
+        self.offset_z(z)
+
+
 
 
     def write(self, cmd):
+        #print("CMD: ", cmd)
         try:
             command = (cmd + "\n").encode('utf-8')
             self.port.write(b"\n")
@@ -54,6 +57,7 @@ class PrintComm:
         line = ""
         while line != (want+'\n').encode():
             line = self.port.readline()
+            #print(line)
 
     def close(self):
         self.port.close()
