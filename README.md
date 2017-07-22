@@ -155,7 +155,20 @@ dclick 10 9
 
 ```
 
-Now this only has to be sent over the network to the 3D printer.
+Now this only has to be sent over the network to the 3D printer. To do this we use [pyserial](https://github.com/pyserial/pyserial)
+
+If you take a look at [core/comm](https://github.com/twinone/logsolve/blob/master/core/comm.py), there the minimum required commands to get this project to work, and a [gcode](https://en.wikipedia.org/wiki/G-code) interpreter.
+(This will probably be a separate project in the future)
+
+The 3D printer will execute the orders sent to it. You would expect a capacitive pen attached to the printer to do it job,
+but it doesn't. [The reason](https://electronics.stackexchange.com/a/60424) is that capacitive pens actually use your body's capacitance, but they don't work if you don't hold them. This results in not working touches most of the time.
+
+To overcome this, we use aluminum foil as capacitive tip instead of a dedicated pen. This allows us to connect the other
+end to the phone's charger, and that way the tip is grounded with the phone and works reliably. See [HARDWARE.md](https://github.com/twinone/logsolve/blob/master/HARDWARE.md) for details.
+
+Here is how the (very ugly but functional) prototype looks:
+
+![img](https://user-images.githubusercontent.com/4309591/28494238-8d89affe-6f28-11e7-8018-b26bd3da6cd3.gif)
 
 
 
@@ -174,5 +187,5 @@ Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seem
 - [x] Design game representation
 - [x] Solver
 - [x] Solution - 3D printer representation
-- [ ] Computer - 3D printer interface
+- [x] Computer - 3D printer interface
 
