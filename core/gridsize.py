@@ -70,7 +70,7 @@ def displ():
     #plt.tight_layout()
     plt.show()
 
-# Process an image
+# return the XxY of the image
 def gridsize(original, segdst=SEGMENT_DISTANCE):
     global im
     # read the image from disk
