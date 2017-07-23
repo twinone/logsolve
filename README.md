@@ -39,7 +39,8 @@ that a solver program can understand without dealing with image recognition.
 
 
 # Requirements
-* [skimage](http://scikit-image.org/docs/dev/install.html) `pip install scikit-image`
+`pip install -r requirements.txt`
+
 
 
 
