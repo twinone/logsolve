@@ -225,4 +225,6 @@ Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seem
 - [x] Solver
 - [x] Solution - 3D printer representation
 - [x] Computer - 3D printer interface
+- [ ] Android app
+- [ ] Web server
 
