@@ -155,10 +155,47 @@ dclick 10 9
 
 ```
 
-Now this only has to be sent over the network to the 3D printer. To do this we use [pyserial](https://github.com/pyserial/pyserial)
+## 5. Execute solution on 3D printer
+
+
+Now the solution only has to be sent over the serial bus (or network) to the 3D printer.
+To do this we use [pyserial](https://github.com/pyserial/pyserial) (we will possibly elaborate on other ways to communicate)
 
 If you take a look at [core/comm](https://github.com/twinone/logsolve/blob/master/core/comm.py), there the minimum required commands to get this project to work, and a [gcode](https://en.wikipedia.org/wiki/G-code) interpreter.
 (This will probably be a separate project in the future)
+
+#### Calibrating
+
+Before actually making clicks we need to know where the phone is on the printer bed. We could use computer vision for this, but it would require a specific angle of the camera, and to keep it simple we are going to calibrate manually.
+
+To calibrate we use `$ python3 calibrate.py </dev/printer>`
+
+```
+Establishing connection to printer
+Home all (G28)
+Centering (50mm up for safety)
+Align the touch tip to the current edge.
+Enter mm to move in axis, 0 to end
+Move Z down until it touches the screen
+> -30
+> -5
+> 0
+Center vertically on the game grid
+> -10
+> -30
+> -30
+> 0
+Center on the LEFT edge of the grid
+> -40
+> 0
+Center on the RIGHT edge of the grid
+> 0
+Calibrated: (70, 70, 40, 15)
+```
+
+Now the printer is calibrated, (`(70, 70, 40, 15)` in the example). These values represent the left, right, vertical center and Z axis in mm of the printer's origin.
+
+#### Executing
 
 The 3D printer will execute the orders sent to it. You would expect a capacitive pen attached to the printer to do it job,
 but it doesn't. [The reason](https://electronics.stackexchange.com/a/60424) is that capacitive pens actually use your body's capacitance, but they don't work if you don't hold them. This results in not working touches most of the time.
