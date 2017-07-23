@@ -40,6 +40,18 @@ class PrintComm:
         self.offset_z(z)
 
 
+    def swipe(self, z, x, y):
+        self.offset_z(-z)
+        self.offset_xy(x, y)
+        self.offset_z(z)
+
+    def swipe_to(self, z, x, y):
+        self.offset_z(-z)
+        self.set_xy(x, y)
+        self.offset_z(z)
+
+
+
 
 
     def write(self, cmd):
@@ -62,18 +74,21 @@ class PrintComm:
     def close(self):
         self.port.close()
 
+    def cli(self):
+        while True:
+            try:
+                line = input('> ')
+            except EOFError:
+                break
+            self.write(line)
+
+
+
 
 def main():
     fname = sys.argv[1]
     pc = PrintComm(fname)
-
-    while True:
-        try:
-            line = input('> ')
-        except EOFError:
-            break
-        pc.write(line)
-    pc.close()
+    pc.cli()
 
 if __name__ == '__main__':
     main()
