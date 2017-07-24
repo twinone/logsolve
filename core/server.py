@@ -1,48 +1,65 @@
 import os
-from flask import Flask, request, redirect, url_for
-from werkzeug.utils import secure_filename
+from flask import Flask, request, redirect, url_for, flash
 
-app = Flask(__name__)
-UPLOAD_FOLDER = '/Users/hermes/Pictures/Uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+IMG_NAME = 'image.jpg'
+OUT_FILE = './image.jpg'
+ALLOWED_EXTENSIONS = set(['jpg'])
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/', methods=['POST','GET'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('upload_file',
-                                    filename=filename))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+class Server:
+    def __init__(self):
+        app = Flask(__name__)
+        app.config['onupload'] = self.handler
+        @app.route('/upload', methods=['POST', 'GET'])
+        def upload_file():
+            if request.method == 'POST':
+                # check if the post request has the file part
+                if IMG_NAME not in request.files:
+                    return redirect(request.url)
+                file = request.files[IMG_NAME]
+                # if user does not select file, browser also
+                # submit a empty part without filename
+                if file.filename == '':
+                    return redirect(request.url)
 
-def main():
-    app.run(host='0.0.0.0')
+                file.save(OUT_FILE)
+                app.config['onupload'](OUT_FILE)
+                return 'ok'
+            if request.method == 'GET':
+                return '''
+                <!doctype html>
+                <title>Upload new File</title>
+                <h1>Upload new File</h1>
+                <form method=post enctype=multipart/form-data>
+                  <p><input type=file name=file>
+                     <input type=submit value=Upload>
+                </form>
+                '''
+
+        self.app = app
+
+    def handler(self, fname):
+        if not self.handlerfunc:
+            print("Handlerfunc not defined")
+        else:
+            self.handlerfunc(fname)
+
+
+    def run(self, host):
+        self.app.run(host=host)
+
+
+    def set_handlerfunc(self, f):
+        self.handlerfunc = f
+
+
+
+def hi_handler(fname):
+    print("Upload complete", fname)
 
 if __name__ == '__main__':
-    main()
+    srv = Server()
+    srv.set_handlerfunc(hi_handler)
+    srv.run('0.0.0.0')
