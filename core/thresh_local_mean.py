@@ -37,8 +37,8 @@ def thresh_local_mean(im, gridsize, **kwargs):
         for xx in range(x):
             rr, cc = cpwhite.cell_ellipse(xx, yy)
             areas[rr, cc] = np.array([255,255,255])
-            iswhite = cpwhite.get_color(xx, yy) < 127-opts['offset']
-            isblack = cpblack.get_color(xx, yy) < 127-opts['offset']
+            iswhite = cpwhite.get_color(xx, yy) < 30
+            isblack = cpblack.get_color(xx, yy) < 30
             rr, cc = cpwhite.cell_rect(xx, yy)
             if isblack:
                 colors[rr, cc] = np.array([0,0,0])
@@ -51,16 +51,18 @@ def thresh_local_mean(im, gridsize, **kwargs):
                 out[yy, xx] = -1
 
     if (opts['debug']):
-        fig, axes = plt.subplots(ncols=3, nrows=1, figsize=(10, 3))
+        fig, axes = plt.subplots(ncols=4, nrows=1, figsize=(10, 3))
         ax = axes.ravel()
         plt.gray()
 
         ax[0].imshow(im)
         ax[0].set_title('Original Image')
-        ax[1].imshow(areas)
-        ax[1].set_title('Detection areas')
-        ax[2].imshow(colors)
-        ax[2].set_title('Detected colors')
+        ax[1].imshow(white)
+        ax[1].set_title('white')
+        ax[2].imshow(black)
+        ax[2].set_title('black')
+        ax[3].imshow(colors)
+        ax[3].set_title('Detected colors')
         for a in ax:
             a.axis('off')
         plt.show()
