@@ -92,8 +92,8 @@ def gridsize(original, segdst=SEGMENT_DISTANCE):
     segs = probabilistic_hough_line(
         im,
         threshold=30,
-        line_length=200,
-        line_gap=10)
+        line_length=250,
+        line_gap=7)
 
     #segs = [seg for seg in segs if vertical(seg)]
 
