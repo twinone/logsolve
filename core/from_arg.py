@@ -1,7 +1,6 @@
 import sys
 
 from skimage.io import imread, imsave
-from .undistort import undistort
 
 
 def from_arg():
