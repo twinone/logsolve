@@ -9,7 +9,7 @@ ALLOWED_EXTENSIONS = set(['jpg'])
 
 
 class Server:
-    def __init__(self):
+    def __init__(self, out_file):
         app = Flask(__name__)
         app.config['onupload'] = self.handler
         @app.route('/upload', methods=['POST', 'GET'])
@@ -24,8 +24,8 @@ class Server:
                 if file.filename == '':
                     return redirect(request.url)
 
-                file.save(OUT_FILE)
-                app.config['onupload'](OUT_FILE)
+                file.save(out_file)
+                app.config['onupload'](out_file)
                 return 'ok'
             if request.method == 'GET':
                 return '''
@@ -60,6 +60,6 @@ def hi_handler(fname):
     print("Upload complete", fname)
 
 if __name__ == '__main__':
-    srv = Server()
+    srv = Server(OUT_FILE)
     srv.set_handlerfunc(hi_handler)
     srv.run('0.0.0.0')
