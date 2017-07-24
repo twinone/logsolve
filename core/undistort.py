@@ -32,8 +32,9 @@ TEST_DIR = path+'/../../test/capture'
 
 # debugging
 COLS = 8
-SAVE_OUTPUTS = True
-DEBUG = True
+SAVE_OUTPUTS = False
+DEBUG = False
+ALWAYS_DISPL = False
 
 
 
@@ -41,6 +42,7 @@ DEBUG = True
 im = None
 steps = []
 def add_image(tit):
+    print('addimage ', tit)
     global im
     steps.append((tit, im.copy()))
 
@@ -63,9 +65,7 @@ def displ():
         ax[r][c].set_title(tit)
 
         if (SAVE_OUTPUTS):
-            imsave('out/'+tit+'.jpg', img_as_ubyte(im))
-
-
+            imsave('out-'+tit+'.jpg', img_as_ubyte(im))
 
         ax[r][c].axis('off')
         ax[r][c].set_xticklabels([])
@@ -81,6 +81,14 @@ def displ():
 # Process an image
 def undistort(original, dilations=0):
     global im
+
+    # resize to a bit smaller and more manageable image size
+    size = max(original.shape)
+    factor = 1000./size
+    print("original size", original.shape, factor)
+    original = tf.rescale(original, factor)
+    print("new shape", original.shape)
+
     # read the image from disk
     im = original.copy()
 
@@ -191,6 +199,7 @@ def undistort(original, dilations=0):
     im = tf.warp(original, tform3, output_shape=(s,s))
     add_image('Result')
 
+    if (ALWAYS_DISPL): displ()
     return im
 
 
