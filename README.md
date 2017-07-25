@@ -227,4 +227,5 @@ Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seem
 - [x] Computer - 3D printer interface
 - [x] Android app
 - [x] Web server
+- [ ] Glue everything together and make a nice API (WIP)
 
