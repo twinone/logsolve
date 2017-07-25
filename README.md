@@ -1,48 +1,47 @@
 # log-solve
 Logic puzzle game solver using Python, Prolog, scikit-image, a camera and a 3D printer.
 
+##### [Demo video/gif here very soon]
+
 # Basic idea
 The idea of this project is to take a picture of a game on a phone (like 
 [Simon Tatham's Puzzles](https://play.google.com/store/apps/details?id=name.boyle.chris.sgtpuzzles&hl=en))
 and solve it using a programming language (like [Prolog](http://www.swi-prolog.org/)).
 Then use a capacitive pen attached to a 3D printer to solve the game on the phone.
 
-We can distinguish three stages in the process:
+The workflow is as follows:
+* Take a picture of the game in it's initial unsolved state
+* Process this image to get a numerical model of the game that a program can solve without worrying about computer vision
+* Solve the game and get a list of steps to get to the solution
+* Apply the steps in real-world on a 3D printer
 
-## 1. Capture & convert the game to a numeric representation. (Capturer)
-There are two ways to approach this:
-* Capturing a screenshot and reading the SD card. This method reduces the problem-solving to puzzles that are predictable from the initial state.
-* Using an external camera. This way we can take pictures or video while playing, and interact with the printer while it's solving. **We will be using this approach**.
 
-## 2. Solve the game (Solver)
-Theoretically this can be done using any language or algorithm, but it will probably be using Prolog and the clpfd library. Some games contributed by other developers are in other languages, but most of Simon Tatham's Puzzles are to be solved in Prolog.
+Obviously this is a very simple way of solving games, and discarding all games that cannot be solved using a single finger. But this restriction is no problem with logic and puzzle games!
 
-## 3. Reproduce the solution on the phone (Executor)
-Using a 3D printer we can simulate a finger that plays the game.
+**You can find a more detailed explanation of each step [below](#how-it-works). It's well worth the 5 minute read.**
 
 
 
-Obviously this is a very simple way of solving a game, and has some restrictions, discarding games that:
-* Require very fast inputs
-* Use more than a single finger or the accelerometer as inputs, etc.
+# Installation and usage
 
+To install, just
 
+```
+$ git clone https://github.com/twinone/logsolve
+$ pip3 install -r requirements.txt
+```
 
-# Design and implementation
+To use, assuming you want to solve game GAME:
 
+```
+$ export PYTHONPATH=/path/to/logsolve:$PYTHONPATH
+$ python3 games/GAME/GAME.py
+```
 
-For the first design only games that can be solved with a picture of the initial state will be considered.
-
-Since solving logic games is trivial using Prolog or a SAT-solver, focus will initially be on the computer vision part,
-recognizing a game and outputting a nicer representation of the game,
-that a solver program can understand without dealing with image recognition.
-
-
-# Requirements
-`pip install -r requirements.txt`
-
-
-
+If you're using logsolve often or developing it, it's recommended to add the pythonpath to your bashrc
+```
+echo 'export PYTHONPATH=/path/to/logsolve:$PYTHONPATH' >> ~/.bashrc
+```
 
 # How it works
 Here are the steps that the programs do in order to solve a puzzle
@@ -226,6 +225,6 @@ Currently I'm learning about **TensorFlow** and using the **MNIST dataset** seem
 - [x] Solver
 - [x] Solution - 3D printer representation
 - [x] Computer - 3D printer interface
-- [ ] Android app
-- [ ] Web server
+- [x] Android app
+- [x] Web server
 
